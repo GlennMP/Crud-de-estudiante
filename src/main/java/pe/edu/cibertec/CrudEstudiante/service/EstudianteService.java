@@ -16,9 +16,11 @@ public interface EstudianteService {
 	
 	void eliminar (long id);
 	
-	Estudiante actualizarPostulante(long id ,String nombre,String apellido, int edad, String direccion, long curso, MultipartFile urlimg);
+	void guardarimg(Estudiante Estudiante, MultipartFile imgpostulante);
 	
-	Estudiante agregarPostulante(String nombre,String apellido, int edad, String direccion, long curso, MultipartFile urlimg);
+	Estudiante actualizarPostulante(long id ,String nombre,String apellido, int edad, String direccion, long curso, String urlimg);
+	
+	Estudiante agregarPostulante(String nombre,String apellido, int edad, String direccion, long curso, String urlimg);
 	    
 	
 

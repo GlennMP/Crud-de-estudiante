@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import pe.edu.cibertec.CrudEstudiante.model.Estudiante;
 import pe.edu.cibertec.CrudEstudiante.service.EstudianteService;
 
@@ -39,6 +38,14 @@ public class EstudianteController {
 	//PathVariable para estableces una variable 
 	//RequestParam un parametro para el objeto
 	//RequestBody para un objeto entero
+	
+	//rutas de busqueda 
+	//System.getProperty("user.dir"); 
+	//System.getProperty("user.name");
+	//System.getProperty("os.name");
+	//System.getProperty("os.version");
+	
+	
 	
 	
 	
@@ -61,12 +68,11 @@ public class EstudianteController {
 	@PostMapping("/guardar")
 	public ResponseEntity<Estudiante> guardarEstudiante(@RequestParam("nombre") String nombre,@RequestParam("apellido") String apellido, @RequestParam("edad") int edad, @RequestParam("direccion") String direccion, @RequestParam("curso") long curso, @RequestParam MultipartFile urlimg){
 		// lo guardado se ingresa es este objeto
-		Estudiante nuevoEstudiante = serviceestudi.agregarPostulante(nombre, apellido, edad, direccion, curso, urlimg);
-		
+		Estudiante nuevoEstudiante = serviceestudi.agregarPostulante(nombre, apellido, edad, direccion, curso,null);
+		serviceestudi.guardarimg(nuevoEstudiante, urlimg);
 		// el objeto no esta null
 		if(nuevoEstudiante != null) {
-			return new ResponseEntity<Estudiante>(HttpStatus.OK);
-			
+			return new ResponseEntity<Estudiante>(HttpStatus.CREATED);
 		// el objeto esta null	
 		}else {
 			return new ResponseEntity<Estudiante>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -74,11 +80,24 @@ public class EstudianteController {
 		
 	}
 	
-
+	
+	@PostMapping("/editar/{id}")
+	public ResponseEntity<Estudiante> editarPostulante (@PathVariable long id ,@RequestParam String name, @RequestParam String apellido, @RequestParam int edad, @RequestParam String direccion,@RequestParam long curso, @RequestParam MultipartFile image){
+		
+		Estudiante editarestudiante=serviceestudi.actualizarPostulante(id, name, apellido, edad, direccion, curso, null);        
+		serviceestudi.guardarimg(editarestudiante, image);
+		// el objeto no esta null
+				if(editarestudiante != null) {
+					return new ResponseEntity<Estudiante>(HttpStatus.CREATED);
+				// el objeto esta null	
+				}else {
+					return new ResponseEntity<Estudiante>(HttpStatus.INTERNAL_SERVER_ERROR);
+				}
+	}
 	
 	
 	@GetMapping("/filtrar/{nombre}")
-	public ResponseEntity<Estudiante> filtrado(@PathParam("nombre") String nombre){
+	public ResponseEntity<Estudiante> filtrado(@PathVariable String nombre){
 		
 		 Estudiante filtroEstudiante = serviceestudi.findEstudianteByNombre(nombre);
 		

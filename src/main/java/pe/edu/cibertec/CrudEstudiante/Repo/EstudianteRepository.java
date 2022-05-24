@@ -10,5 +10,5 @@ import pe.edu.cibertec.CrudEstudiante.model.Estudiante;
 public interface EstudianteRepository extends JpaRepository<Estudiante, Long>{
 	
 	Estudiante findEstudianteById(long Id);
-	Estudiante findEstudianteByNombre(String nombre);
+	Estudiante findByNombre(String nombre);
 }

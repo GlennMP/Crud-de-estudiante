@@ -1,11 +1,15 @@
 package pe.edu.cibertec.CrudEstudiante.service;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static org.springframework.http.MediaType.IMAGE_GIF_VALUE;
+import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
+import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import pe.edu.cibertec.CrudEstudiante.Repo.CursoRepository;
@@ -29,8 +32,6 @@ public class EstudianteServiceImp implements EstudianteService {
 	@Autowired
 	private EstudianteRepository repoestudi;
 	
-	private static String ruta = "C://temp//uploads//";
-
 	
 	// readOnly = true solo de lectura
 	@Override
@@ -42,7 +43,7 @@ public class EstudianteServiceImp implements EstudianteService {
 	@Override
 	@Transactional(readOnly = true)
 	public Estudiante listadoPorId(long id) {
-		return repoestudi.getById(id);
+		return repoestudi.findById(id).get();
 	}
 
 	@Override
@@ -54,87 +55,67 @@ public class EstudianteServiceImp implements EstudianteService {
 	@Override
 	@Transactional
 	public Estudiante actualizarPostulante(long id, String nombre, String apellido, int edad, String direccion,
-			long curso, MultipartFile urlimg) {
+			long curso, String urlimg) {
 		
-		Estudiante estud = repoestudi.findEstudianteById(id);
+		Estudiante estud = repoestudi.findById(id).get();
 		estud.setNombre(nombre);
 		estud.setApellido(apellido);
 		estud.setEdad(edad);
 		estud.setDireccion(direccion);
 		estud.setCurso(curso);
-		estud.setUrlimg(getTemporaryProfileImageUrl(nombre));
-		repoestudi.save(estud);
-		try {
-			guardarimg(estud, urlimg);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		estud.setUrlimg(urlimg);
 		return estud;
 	}
 
 	@Override
 	@Transactional
 	public Estudiante agregarPostulante(String nombre, String apellido, int edad, String direccion, long curso,
-			MultipartFile urlimg) {
+			String urlimg) {
 		
 		Estudiante estud = new Estudiante();
-		
 		estud.setNombre(nombre);
 		estud.setApellido(apellido);
 		estud.setEdad(edad);
 		estud.setDireccion(direccion);
 		estud.setCurso(curso);
-		estud.setUrlimg(getTemporaryProfileImageUrl(nombre));
-		repoestudi.save(estud);
-		try {
-			guardarimg(estud, urlimg);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return estud;
+		estud.setUrlimg(urlimg);
+		return repoestudi.save(estud);
 	}
 	
-	//
-	private String setImageUrl (String nombreusuario) {
-	    return ServletUriComponentsBuilder.fromCurrentContextPath().path(ruta + nombreusuario + "/" + nombreusuario + ".jpg" ).toUriString();
-	}
 	
-	//
-	private String getTemporaryProfileImageUrl(String username) {
-        return ServletUriComponentsBuilder.fromCurrentContextPath().path(ruta+username).toUriString();
-    }
-	
-	
-    private void guardarimg(Estudiante estudiante, MultipartFile imgpostulante)throws IOException {
-    	
-    	if(!imgpostulante.isEmpty()) {
-    		//ruta de la creacion de la carpeta
-    		Path rutaexactadefoto = Paths.get(ruta + "//" +estudiante.getNombre()+" "+ estudiante.getApellido()).toAbsolutePath().normalize();
-    		if (!Files.exists(rutaexactadefoto)){
-    			
-    			// crea la carpeta dicha arriba
-                Files.createDirectories(rutaexactadefoto);
-               // Log.info("Directorio creado:"+rutaexactadefoto.toString());
-            }
-    		
-    		// aqui puede que este el problema
-    		Files.deleteIfExists(Paths.get(rutaexactadefoto+".jpg"));
-            Files.copy(imgpostulante.getInputStream(),rutaexactadefoto.resolve(rutaexactadefoto+"//"+estudiante.getNombre()+" "+ estudiante.getApellido()+".jpg"),REPLACE_EXISTING);
-            estudiante.setUrlimg(setImageUrl(estudiante.getNombre()));
-            repoestudi.save(estudiante);
-            log.info("Archivo guardado en el sistema"+imgpostulante.getOriginalFilename());	
-    	}
-    }
-
 	@Override
 	@Transactional(readOnly = true)
 	public Estudiante  findEstudianteByNombre(String name) {
-		
-		return repoestudi.findEstudianteByNombre(name);
+		return repoestudi.findByNombre(name);
 	}
+	
+	
+	@Override
+	public void guardarimg(Estudiante estudiante, MultipartFile imgpostulante) {
+		
+		if (!Arrays.asList(IMAGE_JPEG_VALUE,IMAGE_PNG_VALUE,IMAGE_GIF_VALUE).contains(imgpostulante.getContentType())){
+			log.info(imgpostulante.getOriginalFilename()+"no es una imagen. Por favor, suba una imagen");
+        }
+		
+		if(!imgpostulante.isEmpty()) {
+			try {
+				Path path = Paths.get(System.getProperty("user.dir")+"/src/main/resources/static/images/").toAbsolutePath().normalize();
+				if(!Files.exists(path)) {
+					 Files.createDirectories(path);
+					 log.info("Directorio creado:"+path.toString());
+				}
+				Files.deleteIfExists(Paths.get(path+".jpg"));
+				Files.copy(imgpostulante.getInputStream(),path.resolve(estudiante.getId()+".jpg"),REPLACE_EXISTING);
+				//Files.write(path, bytes);
+				estudiante.setUrlimg(path.toString()+"\\"+estudiante.getId()+".jpg");
+				repoestudi.save(estudiante);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	
+	
     
 }
