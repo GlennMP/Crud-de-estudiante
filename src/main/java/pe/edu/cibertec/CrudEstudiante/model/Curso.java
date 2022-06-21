@@ -10,24 +10,44 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+
+import org.hibernate.mapping.Set;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import pe.edu.cibertec.CrudEstudiante.model.*;
 
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
-@Entity
-@Table(name = "Curso")
+@Setter
+@Getter
+@ToString
+@Entity // crea la tabla 
+@Table(name = "Curso", uniqueConstraints = {@UniqueConstraint(columnNames = {"nomcurs"})})//significa que esta columna nombre tiene que ser unica
 public class Curso {
 	
-	    //id auto incrementada
-		@Id @GeneratedValue( strategy = GenerationType.IDENTITY)
+	   
+		@Id
+		@GeneratedValue( strategy = GenerationType.IDENTITY)  //id auto incrementada
 		@Column (name = "id_curso")
 		private long id;
 		
-		//@NotEmpty(message = "campo nombre del curso no puede estar vacio") @Size( min = 4, max = 255, message = "campo nombre del curso error")
-		@Column (name = "nomcurs")
+		@NotEmpty(message = "campo nombre del curso no puede estar vacio") @Size( min = 2, max = 255, message = "campo nombre del curso error")
+		@Column (name = "nomcurs",nullable = false)// columna no nula
 		private String nombreCurso;
+		
+	//	@OneToMany(mappedBy = "Curso" /*,cascade = CascadeType.ALL,orphanRemoval = true*/)
+	//	private List<Estudiante> Estudiante /*= new HashSet<>()*/;
+
+		
 		
 		
 		//EAGER para cargar info en este dato cuando se aga un listado de un estudiante
@@ -35,26 +55,10 @@ public class Curso {
 		//mappedby es para hacer la relacion de una tabla a otra
 		//@OneToMany(fetch = FetchType.LAZY, mappedBy = "curso" )
 		//private List<Estudiante> estudiantes;
+		
+		
+		
 
-		public long getId() {
-			return id;
-		}
-
-		public void setId(long id) {
-			this.id = id;
-		}
-
-		public String getNombreCurso() {
-			return nombreCurso;
-		}
-
-		public void setNombreCurso(String nombreCurso) {
-			this.nombreCurso = nombreCurso;
-		}
-
-		@Override
-		public String toString() {
-			return "Curso [id=" + id + ", nombreCurso=" + nombreCurso + "]";
-		}
+		
 
 }

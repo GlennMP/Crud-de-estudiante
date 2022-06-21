@@ -12,15 +12,15 @@ public interface EstudianteService {
 	
 	Estudiante listadoPorId(long id);
 	
-	Estudiante findEstudianteByNombre(String name);
+	Estudiante filtrarEstudiantePorNombre(String name);
 	
-	void eliminar (long id);
+	void eliminar (long id); // no retornas
 	
-	void guardarimg(Estudiante Estudiante, MultipartFile imgpostulante);
+	void guardarimg(Estudiante Estudiante, MultipartFile imgpostulante); // no retornas
 	
-	Estudiante actualizarPostulante(long id ,String nombre,String apellido, int edad, String direccion, long curso, String urlimg);
+	Estudiante actualizarPostulante( long id ,String nombre,String apellido, int edad, String direccion, long curso);
 	
-	Estudiante agregarPostulante(String nombre,String apellido, int edad, String direccion, long curso, String urlimg);
+	Estudiante agregarPostulante(String nombre,String apellido, int edad, String direccion, long curso);
 	    
 	
 
