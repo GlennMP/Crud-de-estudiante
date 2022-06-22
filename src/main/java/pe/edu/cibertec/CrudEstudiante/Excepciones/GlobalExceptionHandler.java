@@ -14,12 +14,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class ExceptionGeneral extends ResponseEntityExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-	
-	
-	
-	
 	
 	//exception para manejar los errores de los campos que no cumplen los colocado en las tablas de la bd
 	@Override

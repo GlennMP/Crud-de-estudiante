@@ -1,5 +1,7 @@
 package pe.edu.cibertec.CrudEstudiante.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +38,16 @@ public class CursoServiceImp implements CursoService{
 		cur.setId(id);
 		cur.setNombreCurso(nombreCurso);
 		return repoCurso.save(cur);
+	}
+
+	@Override
+	public List<Curso> listarCurso() {
+		return repoCurso.findAll();
+	}
+
+	@Override
+	public Curso listarPorId(long id) {	
+		return repoCurso.findCursoById(id);
 	}
 
 }
