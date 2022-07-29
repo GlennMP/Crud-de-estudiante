@@ -17,7 +17,7 @@ nom varchar(150) NOT NULL,
 apell varchar(200) NOT NULL,
 eda int NOT NULL,
 direc varchar(250) NOT NULL,
-img varchar(100) NOT NULL,
+img varchar(300),
 id_cur bigint not null,
 primary key (id_estudiante),
 foreign key (id_cur) references Curso(id_curso)

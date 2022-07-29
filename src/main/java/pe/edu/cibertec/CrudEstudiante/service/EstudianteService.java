@@ -8,19 +8,23 @@ import pe.edu.cibertec.CrudEstudiante.model.Estudiante;
 
 public interface EstudianteService {
 	
-	List<Estudiante> listado(Sort sort);
+	List<Estudiante> listado(int numPagina, int cantidadColum,String filtrarPor);
 	
 	Estudiante listadoPorId(long id);
 	
-	Estudiante findEstudianteByNombre(String name);
+	Estudiante filtrarEstudiantePorNombre(String name);
 	
-	void eliminar (long id);
+	void eliminar (long id); // no retornas
 	
-	void guardarimg(Estudiante Estudiante, MultipartFile imgpostulante);
+	void guardarimg(Estudiante Estudiante, MultipartFile imgpostulante); // no retornas
 	
-	Estudiante actualizarPostulante(long id ,String nombre,String apellido, int edad, String direccion, long curso, String urlimg);
+	Estudiante actualizarPostulante( long id ,String nombre,String apellido, int edad, String direccion, long curso_id);
 	
-	Estudiante agregarPostulante(String nombre,String apellido, int edad, String direccion, long curso, String urlimg);
+	Estudiante agregarPostulante(long curso_id,String nombre,String apellido, int edad, String direccion);
+	
+	List<Estudiante> obtenerEstudiantesPorCurso(long cursoId);
+	
+	Estudiante obtenerEstudiantePorId(long cursoId, long estudianteId);
 	    
 	
 
