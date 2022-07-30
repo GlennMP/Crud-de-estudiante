@@ -43,8 +43,7 @@ public class EstudianteServiceImp implements EstudianteService {
 	@Autowired
 	private CursoRepository repocurso;
 	
-	
-	
+
 	@Override
 	@Transactional(readOnly = true) // solo lectura
 	public List<Estudiante> listado(int numPagina, int cantidadColum,String filtrarPor) {
@@ -53,6 +52,7 @@ public class EstudianteServiceImp implements EstudianteService {
 		Page<Estudiante> estudiantes = repoestudi.findAll(pageable);
 		List<Estudiante> estudiante = estudiantes.getContent();
 		return estudiante;
+
 	}
 
 	@Override
@@ -73,7 +73,8 @@ public class EstudianteServiceImp implements EstudianteService {
 	public Estudiante actualizarPostulante(long id ,String nombre,String apellido, int edad, String direccion, long curso_id) {
 		
 		Curso cursoporelid = repocurso.findById(curso_id).orElseThrow(() -> new NotFoundException("Estudiante", "id" , curso_id));
-		Estudiante estud = repoestudi.findById(id).orElseThrow(() -> new NotFoundException("Estudiante", "id" , id));// utilizamos la excepcion personalizada que creamos para filtrar por id;
+		Estudiante estud = repoestudi.findById(id).orElseThrow(() -> new NotFoundException("Estudiante", "id" , id)); // utilizamos la excepcion personalizada que creamos para filtrar por id;
+
 		estud.setNombre(nombre);
 		estud.setApellido(apellido);
 		estud.setEdad(edad);
@@ -87,7 +88,6 @@ public class EstudianteServiceImp implements EstudianteService {
 	public Estudiante agregarPostulante(long curso_id,String nombre, String apellido, int edad, String direccion) {
 		
 	    Curso cursoporelid = repocurso.findById(curso_id).orElseThrow(() -> new NotFoundException("Estudiante", "id" , curso_id));
-		
 		Estudiante estud = new Estudiante();
 		estud.setNombre(nombre);
 		estud.setApellido(apellido);

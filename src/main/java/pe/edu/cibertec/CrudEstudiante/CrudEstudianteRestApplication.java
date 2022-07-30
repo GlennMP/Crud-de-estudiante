@@ -10,6 +10,9 @@ public class CrudEstudianteRestApplication {
 		SpringApplication.run(CrudEstudianteRestApplication.class, args);
 		
 	    System.out.println("Listo");
+	    
+	    
+	    
 	}
 
 }

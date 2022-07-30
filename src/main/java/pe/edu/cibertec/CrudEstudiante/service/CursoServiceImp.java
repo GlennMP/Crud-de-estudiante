@@ -3,6 +3,7 @@ package pe.edu.cibertec.CrudEstudiante.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,12 +26,9 @@ public class CursoServiceImp implements CursoService{
 	@Override
 	@Transactional
 	public Curso guardar(String nombreCurso) {
-		
 		Curso cur = new Curso();
 		cur.setNombreCurso(nombreCurso);
-		Curso nuevoCurso = repoCurso.save(cur);
-		return nuevoCurso;
-		
+		return repoCurso.save(cur);
 	}
 
 	@Override
@@ -42,19 +40,16 @@ public class CursoServiceImp implements CursoService{
 	@Override
 	@Transactional
 	public Curso actualizarCurso(long id, String nombreCurso) {
-		
 		Curso cur = new Curso();
 		cur.setId(id);
 		cur.setNombreCurso(nombreCurso);
-		Curso actualizaCurso = repoCurso.save(cur);
-		return actualizaCurso;
+		return repoCurso.save(cur);
 		
 	}
 
 	@Override
 	@Transactional(readOnly = true) // solo lectura
 	public List<Curso> listaDeCursos(int numPagina, int cantidadColum,String filtrarPor) {
-		
 		Pageable pageable = PageRequest.of(numPagina, cantidadColum,Sort.by(filtrarPor));
 		Page<Curso> cursos = repoCurso.findAll(pageable);
 		List<Curso> curso = cursos.getContent();
@@ -73,6 +68,9 @@ public class CursoServiceImp implements CursoService{
 	public Curso listarPorNombre(String nombre) {
 		Curso curso = repoCurso.findByNombreCurso(nombre);
 		return curso;
+		
 	}
+
+
 
 }

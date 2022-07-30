@@ -8,8 +8,7 @@ import pe.edu.cibertec.CrudEstudiante.model.Estudiante;
 
 @Repository
 public interface CursoRepository extends JpaRepository<Curso, Long> {
-	
+
 	Curso findByNombreCurso(String nombreCurso); // filtrado por nombre
 	//Curso findCursoById(long id);
-
 }

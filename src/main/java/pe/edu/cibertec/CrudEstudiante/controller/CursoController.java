@@ -17,6 +17,10 @@ import pe.edu.cibertec.CrudEstudiante.model.Curso;
 import pe.edu.cibertec.CrudEstudiante.service.CursoService;
 import pe.edu.cibertec.CrudEstudiante.utilerias.Constantes;
 
+import pe.edu.cibertec.CrudEstudiante.model.Curso;
+import pe.edu.cibertec.CrudEstudiante.model.Estudiante;
+import pe.edu.cibertec.CrudEstudiante.service.CursoService;
+
 @RestController
 @RequestMapping(value = "/curso")
 public class CursoController {
@@ -34,17 +38,27 @@ public class CursoController {
 		}
 	}
 	
+	
+	
+	
 	@PutMapping("/editar")
-	public ResponseEntity<Curso> editarCurso(@RequestParam long id, @RequestParam String nombre){
-		
-		Curso curso = serviceCurso.actualizarCurso(id, nombre);
-		
-		if(curso != null) {
-			return new ResponseEntity<Curso>(curso,HttpStatus.CREATED);
-		}else {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR) ;
+	private ResponseEntity<Curso> editar(@RequestParam long id, @RequestParam String nombre) {
+
+		Curso cur = serviceCurso.listarPorId(id);
+
+		if (cur != null) {
+
+			serviceCurso.actualizarCurso(id, nombre);
+			return new ResponseEntity<Curso>(cur,HttpStatus.CREATED);
+
+		} else {
+
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
 		}
+
 	}
+	
 	
 	@GetMapping("/listar")
 	public ResponseEntity<List<Curso>> lista(@RequestParam(value = "numPagina",defaultValue = Constantes.LISTAR_POR_NUMERO_DE_PAGINA,required = false) int numPagina,
@@ -86,4 +100,7 @@ public class CursoController {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 	}
+
+
+	
 }

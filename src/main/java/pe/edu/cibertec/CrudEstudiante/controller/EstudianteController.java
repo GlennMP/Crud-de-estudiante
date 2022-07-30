@@ -50,6 +50,7 @@ public class EstudianteController {
 	// RequestParam un parametro para el objeto  (es enviado por url)
 	// RequestBody para un objeto entero(es enviado por json)
 
+
 	// rutas de busqueda
 	// System.getProperty("user.dir");
 	// System.getProperty("user.name");
@@ -70,6 +71,7 @@ public class EstudianteController {
 			@RequestParam(value = "filtrarPor", defaultValue = Constantes.LISTA_DE_ESTUDIANTES_ORDENADA_POR,required = false) String filtrarPor) {
 		//el listado se mostrara con un numero de paginas y cantidad de columnas que se va a mostrar
 		List<Estudiante> estudiante = serviceestudi.listado(numPagina,cantidadColum,filtrarPor);
+
 		// si el list del objeto estudiante esta llena
 		if (estudiante.size() > 0) {
 			return new ResponseEntity<List<Estudiante>>(estudiante, HttpStatus.OK);
@@ -103,6 +105,7 @@ public class EstudianteController {
 			@RequestParam String direccion, @RequestParam long curso_id,@RequestParam MultipartFile urlimg) { 
 		
 		Estudiante editarestudiante = serviceestudi.actualizarPostulante(id,nombre,apellido,edad,direccion,curso_id);
+
 		serviceestudi.guardarimg(editarestudiante, urlimg);
 		// el objeto no esta null
 		if (editarestudiante != null) {
@@ -151,6 +154,8 @@ public class EstudianteController {
 		
 	}
 	
+	
+	
 	@GetMapping("/listEstudinIdCurso/{cursoId}")
 	public ResponseEntity<List<Estudiante>>  listDeEstudiantesPorCurso(@PathVariable("cursoId") long cursoId){
 		
@@ -166,5 +171,7 @@ public class EstudianteController {
 		
 		return new ResponseEntity<Estudiante>(estudiante, HttpStatus.OK);
 		
-	}
+		}
+	
+	
 }

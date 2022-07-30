@@ -14,5 +14,6 @@ public interface EstudianteRepository extends JpaRepository<Estudiante, Long>{
 	Estudiante findEstudianteById(long Id); // filtrado por id
 	Estudiante findByNombre(String nombre); // filtrado por nombre 
 	Estudiante findByNombreAndApellido(String nombre, String apellido); // filtrado por nombre y apellido
+
 	List<Estudiante> findByCursoId(long cursoId);
 }

@@ -12,17 +12,18 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+
 
 
 @Entity // crea la tabla 
@@ -54,12 +55,9 @@ public class Estudiante {
 	@Column (name = "direc" ,nullable = false) // columna no nula
 	private String direccion;
 	
-	//@NotEmpty(message = "campo img no puede estar vacio")
+	
 	@Column (name = "img")
 	private String urlimg;
-	
-	//@Column (name = "id_cur" ,nullable = false)
-	//private long curso;
 	
 	//para ignorar el listado del curos al ser un listado de estudiantes por un curso espesifico y nos evita el error de serializacion
 	@JsonIgnore

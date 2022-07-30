@@ -9,9 +9,18 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-
 import java.util.HashSet;
 import java.util.Set;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import pe.edu.cibertec.CrudEstudiante.model.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 
 
 @Entity // crea la tabla 
@@ -60,7 +69,4 @@ public class Curso {
 		//mappedby es para hacer la relacion de una tabla a otra
 		//@OneToMany(fetch = FetchType.LAZY, mappedBy = "curso" )
 		//private List<Estudiante> estudiantes;
-
-		
-		
 }

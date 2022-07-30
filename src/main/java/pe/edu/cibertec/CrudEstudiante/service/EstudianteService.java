@@ -25,7 +25,5 @@ public interface EstudianteService {
 	List<Estudiante> obtenerEstudiantesPorCurso(long cursoId);
 	
 	Estudiante obtenerEstudiantePorId(long cursoId, long estudianteId);
-	    
-	
 
 }
