@@ -5,13 +5,11 @@ import static org.springframework.http.MediaType.IMAGE_GIF_VALUE;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import pe.edu.cibertec.CrudEstudiante.Excepciones.AppException;
 import pe.edu.cibertec.CrudEstudiante.Excepciones.NotFoundException;
@@ -72,7 +68,7 @@ public class EstudianteServiceImp implements EstudianteService {
 	@Transactional 
 	public Estudiante actualizarPostulante(long id ,String nombre,String apellido, int edad, String direccion, long curso_id) {
 		
-		Curso cursoporelid = repocurso.findById(curso_id).orElseThrow(() -> new NotFoundException("Estudiante", "id" , curso_id));
+		Curso cursoporelid = repocurso.findById(curso_id).orElseThrow(() -> new NotFoundException("Curso", "id" , curso_id));
 		Estudiante estud = repoestudi.findById(id).orElseThrow(() -> new NotFoundException("Estudiante", "id" , id)); // utilizamos la excepcion personalizada que creamos para filtrar por id;
 
 		estud.setNombre(nombre);
@@ -87,7 +83,7 @@ public class EstudianteServiceImp implements EstudianteService {
 	@Transactional 
 	public Estudiante agregarPostulante(long curso_id,String nombre, String apellido, int edad, String direccion) {
 		
-	    Curso cursoporelid = repocurso.findById(curso_id).orElseThrow(() -> new NotFoundException("Estudiante", "id" , curso_id));
+	    Curso cursoporelid = repocurso.findById(curso_id).orElseThrow(() -> new NotFoundException("Curso", "id" , curso_id));
 		Estudiante estud = new Estudiante();
 		estud.setNombre(nombre);
 		estud.setApellido(apellido);
@@ -141,14 +137,14 @@ public class EstudianteServiceImp implements EstudianteService {
 
 	@Override
 	public Estudiante obtenerEstudiantePorId(long cursoId, long estudianteId) {
-		Curso cursoporelid = repocurso.findById(cursoId).orElseThrow(() -> new NotFoundException("Estudiante", "id" , estudianteId));
+		Curso cursoporelid = repocurso.findById(cursoId).orElseThrow(() -> new NotFoundException("Curso", "id" , cursoId));
 		Estudiante estudianteporid = repoestudi.findById(estudianteId).orElseThrow(() -> new NotFoundException("Estudiante", "id" , estudianteId));
 		
-		if(estudianteporid.getCurso().getId() == cursoporelid.getId()) {
-			return estudianteporid;
-		}else {
-			 throw new AppException(HttpStatus.BAD_REQUEST, "El estudiante no pertenece al curso");
+		if(estudianteporid.getCurso().getId() != cursoporelid.getId()) {
+			throw new AppException(HttpStatus.BAD_REQUEST, "El estudiante no pertenece al curso");
 		}
+		
+		return estudianteporid;
 	}
 	
 	

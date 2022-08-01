@@ -2,9 +2,15 @@ package pe.edu.cibertec.CrudEstudiante.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,32 +23,39 @@ import pe.edu.cibertec.CrudEstudiante.model.Curso;
 import pe.edu.cibertec.CrudEstudiante.service.CursoService;
 import pe.edu.cibertec.CrudEstudiante.utilerias.Constantes;
 
-import pe.edu.cibertec.CrudEstudiante.model.Curso;
-import pe.edu.cibertec.CrudEstudiante.model.Estudiante;
-import pe.edu.cibertec.CrudEstudiante.service.CursoService;
-
 @RestController
-@RequestMapping(value = "/curso")
+@RequestMapping(value = "/api/curso")
+//se utiliza para las validaciones
+@Validated
 public class CursoController {
 	
 	@Autowired
 	private CursoService serviceCurso;
 	
+	@PreAuthorize("hasRole('ADMIN')")//configuracion de accesibilidad
 	@PostMapping("/guardar")
-	public ResponseEntity<Curso> guardarCurso(@RequestParam String nombre){
-		Curso curso = serviceCurso.guardar(nombre);
-		if(curso != null) {
-			return new ResponseEntity<>(curso,HttpStatus.CREATED);			
+	public ResponseEntity<String> guardarCurso(
+			@RequestParam  
+			@NotEmpty(message = "Campo nombre del curso no puede estar vacio") 
+	        @Size( min = 2, max = 100, message = "Caracter no soportado") String nombre){
+		
+		Curso c = serviceCurso.listarPorNombre(nombre);
+		
+		if(c != null) {
+			return new ResponseEntity<>("Nombre "+ c.getNombreCurso()+" ya esta registrado",HttpStatus.INTERNAL_SERVER_ERROR);
 		}else {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);		
-		}
+			Curso curso = serviceCurso.guardar(nombre);
+				return new ResponseEntity<>(curso.getNombreCurso()+" se registro con exito",HttpStatus.CREATED);						
+		}	
 	}
 	
 	
 	
-	
+	@PreAuthorize("hasRole('ADMIN')")//configuracion de accesibilidad
 	@PutMapping("/editar")
-	private ResponseEntity<Curso> editar(@RequestParam long id, @RequestParam String nombre) {
+	private ResponseEntity<Curso> editar(@RequestParam long id, @RequestParam  
+			@NotEmpty(message = "Campo nombre del curso no puede estar vacio") 
+            @Size( min = 2, max = 100, message = "Caracter no soportado") String nombre) {
 
 		Curso cur = serviceCurso.listarPorId(id);
 
@@ -75,6 +88,7 @@ public class CursoController {
 		}	
 	}
 	
+	@PreAuthorize("hasRole('ADMIN')")//configuracion de accesibilidad
 	@DeleteMapping("/eliminar/{id}")
 	public ResponseEntity<String> eliminar(@PathVariable long id){
 		
@@ -90,7 +104,7 @@ public class CursoController {
 	}
 	
 	@GetMapping("/lisxnom")
-	public ResponseEntity<Curso> listarPorNombre(@RequestParam String nombre){
+	public ResponseEntity<Curso> listarPorNombre(@Valid @RequestParam String nombre){
 		
 		Curso curso = serviceCurso.listarPorNombre(nombre);
 		

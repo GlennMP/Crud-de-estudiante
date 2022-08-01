@@ -11,18 +11,12 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import java.util.HashSet;
 import java.util.Set;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import pe.edu.cibertec.CrudEstudiante.model.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+// el JsonIgnoreProperties casi lo mismo que JsonIgnore 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity // crea la tabla 
 @Table(name = "curso", uniqueConstraints = {@UniqueConstraint(columnNames = {"nomcurs"})})//significa que esta columna nombre tiene que ser unica
 public class Curso {
@@ -32,10 +26,13 @@ public class Curso {
 		@GeneratedValue( strategy = GenerationType.IDENTITY)  //id auto incrementada
 		private long id;
 		
-		//@NotEmpty(message = "campo nombre del curso no puede estar vacio") @Size( min = 4, max = 255, message = "campo nombre del curso error")
-		@Column (name = "nomcurs",nullable = false)// columna no nula
+		//@NotEmpty(message = "Campo nombre del curso no puede estar vacio") 
+		//@Size( min = 2, max = 100, message = "Caracter no soportado")
+		@Column (name = "nomcurs")// columna no nula
 		private String nombreCurso;
 		
+		//el JsonIgnore se utiliza para tablas relacioandas el cual evita el error de BeanSerializer 
+		@JsonIgnore
 		@OneToMany(mappedBy = "curso", cascade = CascadeType.ALL, orphanRemoval = true)
 		private Set<Estudiante> estudiantes = new HashSet<>();
 		
@@ -61,6 +58,14 @@ public class Curso {
 
 		public void setNombreCurso(String nombreCurso) {
 			this.nombreCurso = nombreCurso;
+		}
+
+		public Set<Estudiante> getEstudiantes() {
+			return estudiantes;
+		}
+
+		public void setEstudiantes(Set<Estudiante> estudiantes) {
+			this.estudiantes = estudiantes;
 		}
 		
 		

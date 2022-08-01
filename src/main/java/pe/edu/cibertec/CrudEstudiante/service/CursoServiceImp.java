@@ -10,8 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import lombok.extern.slf4j.Slf4j;
 import pe.edu.cibertec.CrudEstudiante.Excepciones.NotFoundException;
 import pe.edu.cibertec.CrudEstudiante.Repo.CursoRepository;
 import pe.edu.cibertec.CrudEstudiante.model.Curso;

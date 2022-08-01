@@ -5,29 +5,24 @@ import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.validation.Valid;
-import javax.websocket.server.PathParam;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import pe.edu.cibertec.CrudEstudiante.model.Estudiante;
@@ -35,7 +30,9 @@ import pe.edu.cibertec.CrudEstudiante.service.EstudianteService;
 import pe.edu.cibertec.CrudEstudiante.utilerias.Constantes;
 
 @RestController
-@RequestMapping(value = "/estudiante")
+@RequestMapping(value = "/api/estudiante")
+//se utiliza para las validaciones
+@Validated
 public class EstudianteController {
 
 	@Autowired
@@ -81,10 +78,20 @@ public class EstudianteController {
 		}
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")//configuracion de accesibilidad
 	@PostMapping("/guardar")
-	public ResponseEntity<Estudiante> guardarEstudiante(@RequestParam String nombre,
-			@RequestParam String apellido, @RequestParam int edad,
-			@RequestParam String direccion, @RequestParam long curso_id,
+	public ResponseEntity<Estudiante> guardarEstudiante(
+			@RequestParam 
+			@NotEmpty(message = "campo nombre no puede estar vacio") 
+			@Size( min = 3, max = 50, message = "campo nombre error") String nombre,
+			@RequestParam
+			@NotEmpty(message = "campo apellido no puede estar vacio") 
+			@Size( min = 3, max = 100, message = "campo apellido error") String apellido, 
+			@RequestParam @Min(value = 18) @Max(value = 45) int edad,
+			@RequestParam 
+			@NotEmpty(message = "campo direccion no puede estar vacio") 
+			@Size( min = 5, max = 300, message = "campo direccion error") String direccion, 
+			@RequestParam long curso_id,
 			@RequestParam(name = "urlimg")  MultipartFile urlimg) {
 		// lo guardado se ingresa es este objeto
 		Estudiante nuevoEstudiante = serviceestudi.agregarPostulante(curso_id,nombre, apellido, edad, direccion);
@@ -99,10 +106,20 @@ public class EstudianteController {
 
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")//configuracion de accesibilidad
 	@PutMapping("/editar")
-	public ResponseEntity<Estudiante> editarPostulante(@RequestParam Long id,@RequestParam String nombre,
-			@RequestParam String apellido, @RequestParam int edad,
-			@RequestParam String direccion, @RequestParam long curso_id,@RequestParam MultipartFile urlimg) { 
+	public ResponseEntity<Estudiante> editarPostulante(@RequestParam Long id,
+			@RequestParam 
+			@NotEmpty(message = "campo nombre no puede estar vacio") 
+			@Size( min = 3, max = 50, message = "campo nombre error") String nombre,
+			@RequestParam 
+			@NotEmpty(message = "campo apellido no puede estar vacio") 
+			@Size( min = 3, max = 100, message = "campo apellido error") String apellido, 
+			@RequestParam @Min(value = 18) @Max(value = 45) int edad,
+			@RequestParam 
+			@NotEmpty(message = "campo direccion no puede estar vacio") 
+			@Size( min = 5, max = 300, message = "campo direccion error") String direccion, 
+			@RequestParam long curso_id,@RequestParam MultipartFile urlimg) { 
 		
 		Estudiante editarestudiante = serviceestudi.actualizarPostulante(id,nombre,apellido,edad,direccion,curso_id);
 
@@ -138,6 +155,7 @@ public class EstudianteController {
 		}
 	}
 	
+	@PreAuthorize("hasRole('ADMIN')")//configuracion de accesibilidad
 	@DeleteMapping("/eliminar/{id}")
 	public ResponseEntity<String> eliminar(@PathVariable long id){
 		Estudiante filtroEstudiante = serviceestudi.listadoPorId(id);
